@@ -1,15 +1,16 @@
 name: PR-title Jira-key (act test harness)
 # This workflow is used ONLY by the act-based integration test suite (scripts/run-act-tests.sh).
 # It mirrors the logic of pr-title-jira.yml but:
-#   - is triggered by pull_request_target so act can invoke it directly with synthetic fixtures
+#   - is triggered by workflow_dispatch so act can invoke it with synthetic fixtures
+#     WITHOUT also firing on real PRs opened against this repo (which would happen with
+#     pull_request_target since github-actions is itself a github-actions repo)
 #   - uses the checked-out workspace rather than fetching from GitHub
 #   - reads test-seam env vars (MOCK_*) from the runner environment (set via act --env flags)
-# This workflow does NOT fire in production because it lives in the workflows repo itself,
-# which consumers never open pull requests against.
+# workflow_dispatch never fires automatically — it must be invoked explicitly, which act does
+# via `act workflow_dispatch -e <event.json>`. Real GitHub PRs cannot fire this workflow.
 
 on:
-  pull_request_target:
-    types: [opened, ready_for_review]
+  workflow_dispatch:
 
 jobs:
   pr-title-jira:

@@ -55,7 +55,7 @@ for entry in "${CASES[@]}"; do
   # attempt a real git clone with the fake token (and fail). Instead the test-harness workflow
   # provides a dummy token explicitly to actions/github-script. All GitHub API calls are bypassed
   # by MOCK_NO_GH_API=1; only Jira calls reach the network via JIRA_BASE_URL.
-  act pull_request_target \
+  act workflow_dispatch \
        -e "fixtures/events/${fixture}" \
        -W "${WORKFLOW}" \
        -s JIRA_API_TOKEN=fake-token \

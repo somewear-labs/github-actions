@@ -28,7 +28,7 @@ CASES=(
   "external-contributor.json:happy:skip-external:default-active:non-member:"
   "warn-only.json:happy:skip-warn-only:warn-only-mode::"
   "jira-4xx.json:4xx-auth:fail-jira-4xx:default-active::"
-  "jira-5xx-then-success.json:5xx-then-success:created-ticket:default-active::"
+  "jira-5xx-then-success.json:5xx-then-success:patched-title:default-active::"
   "race-loss.json:happy:skip-race-lost:default-active::SBE-9999 race-added title"
   "long-title.json:happy:patched-title-truncated:default-active::"
 )
@@ -51,15 +51,19 @@ for entry in "${CASES[@]}"; do
 
   LOG=$(mktemp)
   # Allow act to exit non-zero (e.g. core.setFailed cases); the DECISION grep below is the real assertion.
+  # GITHUB_TOKEN: required by actions/github-script; a fake value suffices because all GitHub API
+  # calls are bypassed by MOCK_NO_GH_API=1 (only Jira calls reach the network, via JIRA_BASE_URL).
   act pull_request_target \
        -e "fixtures/events/${fixture}" \
        -W "${WORKFLOW}" \
        -s JIRA_API_TOKEN=fake-token \
+       -s GITHUB_TOKEN=fake-github-token \
        --env "JIRA_BASE_URL=http://host.docker.internal:${PORT}" \
        --env "MOCK_SCENARIO=${scenario}" \
        --env "MOCK_GH_CONFIG_BODY=${CONFIG_BODY}" \
        --env "MOCK_GH_MEMBERSHIP=${MEMBERSHIP}" \
        --env "MOCK_TITLE_RACE_INJECT=${race_inject:-}" \
+       --env "MOCK_NO_GH_API=1" \
        --quiet 2>&1 | tee "$LOG" || true
 
   if grep -q "DECISION=${expected}" "$LOG"; then

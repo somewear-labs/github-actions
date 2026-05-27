@@ -30,8 +30,8 @@ _Updated 2026-05-26. Verify against git log on `main` before trusting._
 | 10. Steps 8-10 (truncation + PATCH + comment) | ✅ Complete | `fbf0105` (+ plan-fixup `e7813da`) |
 | 11. Documentation | ✅ Complete | `d6a0793` |
 | 12. Self-CI + tag v1.0.0 | ✅ Complete | `2ba1601` + 6 fix-ups → `af7c341`; tags `v1.0.0` and `v1` at `a7cff7c` |
-| 13. Set up org secret + email var (user-driven; pulse-bot deferred) | ⏳ Next (human) | — |
-| 14. Fixture repo + end-to-end smoke | Pending (blocked by 13) | — |
+| 13. Set up org secret + email var (user-driven; pulse-bot deferred) | ✅ Complete | workflow change shipped as v1.0.1 via PR #1 (`84a1998` + `5501b39`); user set `JIRA_API_TOKEN` org secret + `JIRA_USER_EMAIL` org var |
+| 14. Fixture repo + end-to-end smoke | ⏳ Next | — |
 | 15. Pilot wire-up PR in `ataklibs` (warn-only, user-driven) | Pending | — |
 | 16. Pilot active-mode flip (user-driven) | Pending | — |
 

@@ -17,7 +17,7 @@ fi
 # - config_key: '' uses base-ref-loaded config; otherwise key into CONFIGS map below.
 # - membership: 'member' (default) | 'non-member' | 'real' (no mock).
 CASES=(
-  "happy-create.json:happy:proceed-create:default-active::"
+  "happy-create.json:happy:created-ticket:default-active::"
   "draft-opened.json:happy:skip-draft:default-active::"
   "ignore-author.json:happy:skip-ignored-author:default-active::"
   "idempotent-skip-prefix.json:happy:skip-has-key:default-active::"
@@ -26,6 +26,8 @@ CASES=(
   "idempotent-skip-trailing.json:happy:skip-has-key:default-active::"
   "external-contributor.json:happy:skip-external:default-active:non-member"
   "warn-only.json:happy:skip-warn-only:warn-only-mode:"
+  "jira-4xx.json:4xx-auth:fail-jira-4xx:default-active::"
+  "jira-5xx-then-success.json:5xx-then-success:created-ticket:default-active::"
 )
 
 declare -A CONFIGS
@@ -45,6 +47,7 @@ for entry in "${CASES[@]}"; do
   MEMBERSHIP="${membership:-member}"
 
   LOG=$(mktemp)
+  # Allow act to exit non-zero (e.g. core.setFailed cases); the DECISION grep below is the real assertion.
   act pull_request_target \
        -e "fixtures/events/${fixture}" \
        -W "${WORKFLOW}" \
@@ -53,7 +56,7 @@ for entry in "${CASES[@]}"; do
        --env "MOCK_SCENARIO=${scenario}" \
        --env "MOCK_GH_CONFIG_BODY=${CONFIG_BODY}" \
        --env "MOCK_GH_MEMBERSHIP=${MEMBERSHIP}" \
-       --quiet 2>&1 | tee "$LOG"
+       --quiet 2>&1 | tee "$LOG" || true
 
   if grep -q "DECISION=${expected}" "$LOG"; then
     echo "OK:   ${fixture}"

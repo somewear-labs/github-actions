@@ -15,11 +15,13 @@ jobs:
       - name: Checkout reusable-workflow repo at the pinned ref
         # Reads schema/ and inline-script deps from this very repo at the ref
         # the consumer used (e.g. @v1). github.action_path is not available
-        # in reusable workflows, so we checkout explicitly.
+        # in reusable workflows, so we checkout explicitly. github.workflow_sha
+        # is the SHA of the reusable workflow file as resolved from the
+        # consumer's `uses:` pin — exactly the ref we want to checkout.
         uses: actions/checkout@v4
         with:
           repository: somewear-labs/github-actions
-          ref: ${{ github.workflow_ref && github.workflow_ref || 'main' }}
+          ref: ${{ github.workflow_sha || 'main' }}
           path: .pr-title-jira
 
       - name: Install runtime deps

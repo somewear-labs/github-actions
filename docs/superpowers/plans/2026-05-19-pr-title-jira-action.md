@@ -576,10 +576,16 @@ jira:
 nonsense_field: hello
 ```
 
-- [ ] **Step 5: Install schema test deps**
+- [ ] **Step 5: Install schema/runtime deps**
+
+These three packages are used both by the schema test script and at runtime
+by the reusable workflow (Task 4's `npm ci --omit=dev` install step). They
+must be saved as runtime `dependencies`, not `devDependencies`, or the
+`--omit=dev` install in CI/consumer environments will skip them and Task 5+
+will fail with `Cannot find module 'js-yaml'`.
 
 ```bash
-npm install --save-dev ajv@8 ajv-formats@3 js-yaml@4
+npm install --save ajv@8 ajv-formats@3 js-yaml@4
 ```
 
 - [ ] **Step 6: Write the schema test script**
@@ -702,11 +708,13 @@ jobs:
       - name: Checkout reusable-workflow repo at the pinned ref
         # Reads schema/ and inline-script deps from this very repo at the ref
         # the consumer used (e.g. @v1). github.action_path is not available
-        # in reusable workflows, so we checkout explicitly.
+        # in reusable workflows, so we checkout explicitly. github.workflow_sha
+        # is the SHA of the reusable workflow file as resolved from the
+        # consumer's `uses:` pin — exactly the ref we want to checkout.
         uses: actions/checkout@v4
         with:
           repository: somewear-labs/github-actions
-          ref: ${{ github.workflow_ref && github.workflow_ref || 'main' }}
+          ref: ${{ github.workflow_sha || 'main' }}
           path: .pr-title-jira
 
       - name: Install runtime deps

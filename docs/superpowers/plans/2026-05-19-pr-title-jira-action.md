@@ -1702,7 +1702,7 @@ git commit -m "feat(workflow): step 7 (compare-and-swap re-check)"
 
 Create `fixtures/events/long-title.json`: copy `happy-create.json` and set `pull_request.title` to a 250-character string. Use this exact string (250 chars):
 ```
-Refactor the very large authentication service to consolidate every retry policy across every consumer module so that no client implementation ever again has to reinvent exponential backoff or jittered retry policies for transient infrastructure failures
+Refactor the very large authentication service to consolidate retry policies across every consumer module so that no client implementation ever again has to reinvent exponential backoff or jittered retry policies for transient infrastructure failures
 ```
 
 - [ ] **Step 2: Append the case to the runner**

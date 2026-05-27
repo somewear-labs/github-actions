@@ -17,6 +17,11 @@ fi
 CASES=(
   "happy-create.json:happy:proceed-create"
   "draft-opened.json:happy:skip-draft"
+  "ignore-author.json:happy:skip-ignored-author"
+  "idempotent-skip-prefix.json:happy:skip-has-key"
+  "idempotent-skip-no-colon.json:happy:skip-has-key"
+  "idempotent-skip-mid-title.json:happy:skip-has-key"
+  "idempotent-skip-trailing.json:happy:skip-has-key"
 )
 
 failed=0

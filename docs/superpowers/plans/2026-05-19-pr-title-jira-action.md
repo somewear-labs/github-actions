@@ -30,7 +30,7 @@ _Updated 2026-05-26. Verify against git log on `main` before trusting._
 | 10. Steps 8-10 (truncation + PATCH + comment) | ✅ Complete | `fbf0105` (+ plan-fixup `e7813da`) |
 | 11. Documentation | ✅ Complete | `d6a0793` |
 | 12. Self-CI + tag v1.0.0 | ✅ Complete | `2ba1601` + 6 fix-ups → `af7c341`; tags `v1.0.0` and `v1` at `a7cff7c` |
-| 13. Provision pulse-bot + org secret (user-driven) | ⏳ Next (human) | — |
+| 13. Set up org secret + email var (user-driven; pulse-bot deferred) | ⏳ Next (human) | — |
 | 14. Fixture repo + end-to-end smoke | Pending (blocked by 13) | — |
 | 15. Pilot wire-up PR in `ataklibs` (warn-only, user-driven) | Pending | — |
 | 16. Pilot active-mode flip (user-driven) | Pending | — |
@@ -41,6 +41,7 @@ _Updated 2026-05-26. Verify against git log on `main` before trusting._
 - Task 12 added several non-plan files/seams to get act tests green in CI: `.github/workflows/test-pr-title-jira.yml` (an act-only `pull_request_target` mirror of `pr-title-jira.yml`), `MOCK_NO_GH_API` env seam in `lib/main.js` + `lib/comments.js`, `express` in root `package.json` dependencies, and a more-permissive act-runner grep that matches both `core.info` and `::set-output::` formats. CI green at run 26494906847.
 - Code reviews across Tasks 3-12 logged ~25 cleanup items (style, error-handling, doc-accuracy, test-coverage gaps). Tracked in the session task list — should be processed as a single cleanup batch before Task 15 (pilot).
 - Code-review polish items deferred from Task 1 (still pending, user-action): branch protection on `main`, `LICENSE`, `SECURITY.md`, secret-scanning.
+- **Task 13 simplified 2026-05-27**: skipping the dedicated `pulse-bot` service account for now (overkill at current scale, no mailbox provisioned, audit-trail benefit minor). Reusing Theo's Atlassian account: token generated under his profile, `JIRA_API_TOKEN` org secret + `JIRA_USER_EMAIL` org variable (= his email) point at it. Workflow updated to forward `vars.JIRA_USER_EMAIL` so the email side is configurable. Migrating to a real bot account later is a token+var swap with no code changes. Steps 1-3 of Task 13 (Atlassian user creation, project permissions, sandbox `BOT` project owned by pulse-bot) are deferred to a follow-up if/when the bot account becomes worthwhile — the `BOT` sandbox project is still wanted; Theo can create it under his own ownership.
 
 ---
 

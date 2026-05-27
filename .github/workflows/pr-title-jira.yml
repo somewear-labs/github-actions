@@ -12,16 +12,20 @@ jobs:
     permissions:
       pull-requests: write
     steps:
-      - name: Checkout reusable-workflow repo at the pinned ref
-        # Reads schema/ and inline-script deps from this very repo at the ref
-        # the consumer used (e.g. @v1). github.action_path is not available
-        # in reusable workflows, so we checkout explicitly. github.workflow_sha
-        # is the SHA of the reusable workflow file as resolved from the
-        # consumer's `uses:` pin — exactly the ref we want to checkout.
+      - name: Checkout reusable-workflow repo at v1
+        # Reads schema/ and lib/ from this repo. github.action_path is not
+        # available in reusable workflows, so we checkout explicitly.
+        #
+        # ref: 'v1' (the moving major tag) — pinning to a static ref here
+        # because github.workflow_sha resolves to the *caller's* commit SHA
+        # under pull_request_target (not the called workflow's), which causes
+        # actions/checkout to look up a non-existent SHA on this repo.
+        # Consumers pin via `uses: ...@v1` and that's what gets checked out.
+        # On a breaking v2, this needs a manual bump too.
         uses: actions/checkout@v4
         with:
           repository: somewear-labs/github-actions
-          ref: ${{ github.workflow_sha || 'main' }}
+          ref: v1
           path: .pr-title-jira
 
       - name: Install runtime deps

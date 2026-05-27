@@ -1,0 +1,40 @@
+name: PR-title Jira-key (act test harness)
+# This workflow is used ONLY by the act-based integration test suite (scripts/run-act-tests.sh).
+# It mirrors the logic of pr-title-jira.yml but:
+#   - is triggered by pull_request_target so act can invoke it directly with synthetic fixtures
+#   - uses the checked-out workspace rather than fetching from GitHub
+#   - reads test-seam env vars (MOCK_*) from the runner environment (set via act --env flags)
+# This workflow does NOT fire in production because it lives in the workflows repo itself,
+# which consumers never open pull requests against.
+
+on:
+  pull_request_target:
+    types: [opened, ready_for_review]
+
+jobs:
+  pr-title-jira:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install runtime deps
+        run: npm ci --omit=dev
+        shell: bash
+
+      - name: Run PR-title-Jira logic
+        uses: actions/github-script@v7
+        # Note: MOCK_* env vars and JIRA_BASE_URL are passed via act's --env flags and
+        # flow through to process.env in the script without being listed here.
+        # Only JIRA_API_TOKEN is mapped explicitly (comes from act -s secret flag).
+        env:
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+        with:
+          script: |
+            const path = require('path');
+            const cwd = process.env.GITHUB_WORKSPACE;
+            process.chdir(cwd);
+            const main = require(path.join(cwd, 'lib', 'main.js'));
+            await main({ github, context, core });

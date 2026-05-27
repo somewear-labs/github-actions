@@ -5,7 +5,7 @@ set -euo pipefail
 # Expects the Jira mock to be running on port 4111 (npm run mock:jira).
 
 PORT=${JIRA_MOCK_PORT:-4111}
-WORKFLOW=.github/workflows/pr-title-jira.yml
+WORKFLOW=.github/workflows/test-pr-title-jira.yml
 
 # Confirm the mock is up.
 if ! curl -sf "http://localhost:${PORT}/rest/api/3/myself" >/dev/null; then

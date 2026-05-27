@@ -1,0 +1,17 @@
+{
+  "name": "somewear-labs-github-actions",
+  "version": "1.0.0",
+  "description": "Reusable GitHub Actions workflows for somewear-labs",
+  "private": true,
+  "scripts": {
+    "test:schema": "node scripts/test-schema.js",
+    "test:act": "scripts/run-act-tests.sh",
+    "test": "npm run test:schema && npm run test:act",
+    "mock:jira": "node fixtures/jira-mock/server.js"
+  },
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/somewear-labs/github-actions"
+  }
+}

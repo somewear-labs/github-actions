@@ -27,3 +27,5 @@ act pull_request_target \
 ```
 
 (`host.docker.internal` lets the act container reach the host-side Jira mock.)
+
+**Linux note:** On most Linux Docker installations `host.docker.internal` does not resolve out of the box. With Docker 20.10+ you can pass `--container-options "--add-host=host.docker.internal:host-gateway"` to `act`, or substitute your `docker0` bridge IP (often `172.17.0.1`).

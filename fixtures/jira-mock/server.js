@@ -32,6 +32,12 @@ app.post('/rest/api/3/issue', (req, res) => {
     }
     return res.status(201).json(s.successBody);
   }
+
+  // Fallthrough: unknown or missing kind. Fail loudly so the test author
+  // gets immediate feedback instead of a hung connection.
+  return res.status(500).json({
+    errorMessages: [`scenario "${name}" has unknown or missing kind: ${s.kind}`]
+  });
 });
 
 app.get('/rest/api/3/myself', (req, res) => {

@@ -14,26 +14,33 @@
 
 ## Execution progress
 
-_Updated 2026-05-26 between sessions. Verify against git log on `main` before trusting._
+_Updated 2026-05-26. Verify against git log on `main` before trusting._
 
 | Task | Status | Commit(s) |
 |---|---|---|
 | 1. Scaffold repo + migrate spec/plan | ✅ Complete | `9e025d4` |
 | 2. Local test harness (act + Jira mock) | ✅ Complete | `ab26651` + fix-up `35ff0ea` |
-| 3. JSON schema for per-repo config | ⏳ Next | — |
-| 4. Reusable workflow skeleton | Pending | — |
-| 5–10. Workflow data-flow steps | Pending | — |
-| 11. Documentation | Pending | — |
-| 12. Self-CI + tag v1.0.0 | Pending | — |
-| 13. Provision pulse-bot + org secret (user-driven) | Pending | — |
-| 14. Fixture repo + end-to-end smoke | Pending | — |
+| 3. JSON schema for per-repo config | ✅ Complete | `17eb350` |
+| 4. Reusable workflow skeleton | ✅ Complete | `8a5a859` + fix-up `72c7cb8` |
+| 5. Steps 0+1 (draft filter + config loader) | ✅ Complete | `4304609` |
+| 6. Steps 2+3 (author ignore + idempotency) | ✅ Complete | `10957fc` |
+| 7. Steps 4+5 (external guard + warn-only) | ✅ Complete | `1fc34a2` |
+| 8. Step 6 (Jira create + retry) | ✅ Complete | `9c23052` |
+| 9. Step 7 (compare-and-swap) | ✅ Complete | `9f72811` |
+| 10. Steps 8-10 (truncation + PATCH + comment) | ✅ Complete | `fbf0105` (+ plan-fixup `e7813da`) |
+| 11. Documentation | ✅ Complete | `d6a0793` |
+| 12. Self-CI + tag v1.0.0 | ✅ Complete | `2ba1601` + 6 fix-ups → `af7c341`; tags `v1.0.0` and `v1` at `a7cff7c` |
+| 13. Provision pulse-bot + org secret (user-driven) | ⏳ Next (human) | — |
+| 14. Fixture repo + end-to-end smoke | Pending (blocked by 13) | — |
 | 15. Pilot wire-up PR in `ataklibs` (warn-only, user-driven) | Pending | — |
 | 16. Pilot active-mode flip (user-driven) | Pending | — |
 
-**Decisions worth re-surfacing for the next session:**
-- Repo owner: `@theo-gordon` (verified with user; codified in `.github/CODEOWNERS`).
-- Code-review polish items deferred from Task 1: branch protection on `main` (recommended before Task 12), `LICENSE` file, `SECURITY.md`, enabling secret-scanning. None block Tasks 3-10.
-- Plan-text fixes already applied (corrected `cwd` for `gh repo create`, fixed `../pulse/...` relative paths, added plan-file migration alongside spec). The plan text in this file is the canonical source.
+**Decisions / deviations worth re-surfacing for the next session:**
+- Repo owner: `@theo-gordon` (verified; codified in `.github/CODEOWNERS`).
+- Plan-text fixes applied during Tasks 4 + 10: corrected `github.workflow_ref` → `github.workflow_sha`, moved `ajv`/`ajv-formats`/`js-yaml` from devDependencies to dependencies, dropped one word from the long-title fixture string to make it exactly 250 chars. Plan text reflects these.
+- Task 12 added several non-plan files/seams to get act tests green in CI: `.github/workflows/test-pr-title-jira.yml` (an act-only `pull_request_target` mirror of `pr-title-jira.yml`), `MOCK_NO_GH_API` env seam in `lib/main.js` + `lib/comments.js`, `express` in root `package.json` dependencies, and a more-permissive act-runner grep that matches both `core.info` and `::set-output::` formats. CI green at run 26494906847.
+- Code reviews across Tasks 3-12 logged ~25 cleanup items (style, error-handling, doc-accuracy, test-coverage gaps). Tracked in the session task list — should be processed as a single cleanup batch before Task 15 (pilot).
+- Code-review polish items deferred from Task 1 (still pending, user-action): branch protection on `main`, `LICENSE`, `SECURITY.md`, secret-scanning.
 
 ---
 

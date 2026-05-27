@@ -25,9 +25,11 @@ jobs:
         run: |
           curl -sL https://raw.githubusercontent.com/nektos/act/master/install.sh | sudo bash -s -- -b /usr/local/bin v0.2.88
           act --version
-      - name: Configure act (add host.docker.internal on Linux)
+      - name: Configure act (image selection + host.docker.internal on Linux)
         run: |
-          mkdir -p ~/.config/act
+          # Supply default image to suppress the first-run interactive prompt.
+          # catthehacker/ubuntu:act-latest is the standard act CI image (~500 MB).
+          echo '-P ubuntu-latest=catthehacker/ubuntu:act-latest' >> ~/.actrc
           echo '--container-options=--add-host=host.docker.internal:host-gateway' >> ~/.actrc
       - run: npm ci
       - name: Start Jira mock

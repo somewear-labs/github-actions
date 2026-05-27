@@ -18,7 +18,7 @@ fi
 # - membership: 'member' (default) | 'non-member' | 'real' (no mock).
 # - race_inject: if non-empty, sets MOCK_TITLE_RACE_INJECT to simulate a CAS race loss.
 CASES=(
-  "happy-create.json:happy:created-ticket:default-active::"
+  "happy-create.json:happy:patched-title:default-active::"
   "draft-opened.json:happy:skip-draft:default-active::"
   "ignore-author.json:happy:skip-ignored-author:default-active::"
   "idempotent-skip-prefix.json:happy:skip-has-key:default-active::"
@@ -30,6 +30,7 @@ CASES=(
   "jira-4xx.json:4xx-auth:fail-jira-4xx:default-active::"
   "jira-5xx-then-success.json:5xx-then-success:created-ticket:default-active::"
   "race-loss.json:happy:skip-race-lost:default-active::SBE-9999 race-added title"
+  "long-title.json:happy:patched-title-truncated:default-active::"
 )
 
 declare -A CONFIGS

@@ -28,10 +28,14 @@ jobs:
         uses: actions/github-script@v7
         # Note: MOCK_* env vars and JIRA_BASE_URL are passed via act's --env flags and
         # flow through to process.env in the script without being listed here.
-        # Only JIRA_API_TOKEN is mapped explicitly (comes from act -s secret flag).
+        # JIRA_API_TOKEN comes from act -s secret flag.
+        # github-token is provided explicitly so act does not need GITHUB_TOKEN set as
+        # a secret (which would cause actions/checkout@v4 to attempt a real git clone).
         env:
           JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
         with:
+          # Provide a dummy token for act; MOCK_NO_GH_API=1 bypasses all real API calls.
+          github-token: ${{ secrets.GITHUB_TOKEN || secrets.JIRA_API_TOKEN || 'act-dummy-token' }}
           script: |
             const path = require('path');
             const cwd = process.env.GITHUB_WORKSPACE;

@@ -51,13 +51,14 @@ for entry in "${CASES[@]}"; do
 
   LOG=$(mktemp)
   # Allow act to exit non-zero (e.g. core.setFailed cases); the DECISION grep below is the real assertion.
-  # GITHUB_TOKEN: required by actions/github-script; a fake value suffices because all GitHub API
-  # calls are bypassed by MOCK_NO_GH_API=1 (only Jira calls reach the network, via JIRA_BASE_URL).
+  # GITHUB_TOKEN is intentionally NOT passed as a secret: doing so causes actions/checkout@v4 to
+  # attempt a real git clone with the fake token (and fail). Instead the test-harness workflow
+  # provides a dummy token explicitly to actions/github-script. All GitHub API calls are bypassed
+  # by MOCK_NO_GH_API=1; only Jira calls reach the network via JIRA_BASE_URL.
   act pull_request_target \
        -e "fixtures/events/${fixture}" \
        -W "${WORKFLOW}" \
        -s JIRA_API_TOKEN=fake-token \
-       -s GITHUB_TOKEN=fake-github-token \
        --env "JIRA_BASE_URL=http://host.docker.internal:${PORT}" \
        --env "MOCK_SCENARIO=${scenario}" \
        --env "MOCK_GH_CONFIG_BODY=${CONFIG_BODY}" \

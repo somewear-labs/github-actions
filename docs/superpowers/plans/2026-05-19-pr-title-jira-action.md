@@ -12,6 +12,31 @@
 
 ---
 
+## Execution progress
+
+_Updated 2026-05-26 between sessions. Verify against git log on `main` before trusting._
+
+| Task | Status | Commit(s) |
+|---|---|---|
+| 1. Scaffold repo + migrate spec/plan | ✅ Complete | `9e025d4` |
+| 2. Local test harness (act + Jira mock) | ✅ Complete | `ab26651` + fix-up `35ff0ea` |
+| 3. JSON schema for per-repo config | ⏳ Next | — |
+| 4. Reusable workflow skeleton | Pending | — |
+| 5–10. Workflow data-flow steps | Pending | — |
+| 11. Documentation | Pending | — |
+| 12. Self-CI + tag v1.0.0 | Pending | — |
+| 13. Provision pulse-bot + org secret (user-driven) | Pending | — |
+| 14. Fixture repo + end-to-end smoke | Pending | — |
+| 15. Pilot wire-up PR in `ataklibs` (warn-only, user-driven) | Pending | — |
+| 16. Pilot active-mode flip (user-driven) | Pending | — |
+
+**Decisions worth re-surfacing for the next session:**
+- Repo owner: `@theo-gordon` (verified with user; codified in `.github/CODEOWNERS`).
+- Code-review polish items deferred from Task 1: branch protection on `main` (recommended before Task 12), `LICENSE` file, `SECURITY.md`, enabling secret-scanning. None block Tasks 3-10.
+- Plan-text fixes already applied (corrected `cwd` for `gh repo create`, fixed `../pulse/...` relative paths, added plan-file migration alongside spec). The plan text in this file is the canonical source.
+
+---
+
 ## File structure (target end state in `somewear-labs/github-actions`)
 
 ```

@@ -13,35 +13,34 @@ if ! curl -sf "http://localhost:${PORT}/rest/api/3/myself" >/dev/null; then
   exit 2
 fi
 
-# Each entry: fixture_filename:scenario:expected_status
-# scenario is sent as MOCK_SCENARIO env var to the workflow (and into requests via header).
-# expected_status: pass|fail
+# Each entry: fixture:scenario:expected_decision
 CASES=(
-  "happy-create.json:happy:pass"
+  "happy-create.json:happy:proceed-create"
+  "draft-opened.json:happy:skip-draft"
 )
-# More cases appended as later tasks add fixtures.
 
 failed=0
 for entry in "${CASES[@]}"; do
   IFS=':' read -r fixture scenario expected <<<"$entry"
   echo "=== ${fixture} (scenario=${scenario}, expect=${expected}) ==="
-  if act pull_request_target \
+
+  LOG=$(mktemp)
+  act pull_request_target \
        -e "fixtures/events/${fixture}" \
        -W "${WORKFLOW}" \
        -s JIRA_API_TOKEN=fake-token \
        --env "JIRA_BASE_URL=http://host.docker.internal:${PORT}" \
        --env "MOCK_SCENARIO=${scenario}" \
-       --quiet; then
-    actual=pass
-  else
-    actual=fail
-  fi
-  if [ "${actual}" != "${expected}" ]; then
-    echo "FAIL: ${fixture} expected ${expected}, got ${actual}"
-    failed=$((failed + 1))
-  else
+       --quiet 2>&1 | tee "$LOG"
+
+  if grep -q "DECISION=${expected}" "$LOG"; then
     echo "OK:   ${fixture}"
+  else
+    echo "FAIL: ${fixture} expected DECISION=${expected}, got:"
+    grep "DECISION=" "$LOG" || echo "  (no decision marker found)"
+    failed=$((failed + 1))
   fi
+  rm "$LOG"
 done
 
 if [ "${failed}" -gt 0 ]; then

@@ -1,0 +1,17 @@
+{
+  "action": "opened",
+  "number": 43,
+  "pull_request": {
+    "number": 43,
+    "draft": true,
+    "title": "WIP: refactor auth",
+    "body": "",
+    "html_url": "https://github.com/somewear-labs/fixture-repo/pull/43",
+    "base": { "ref": "main", "repo": { "full_name": "somewear-labs/fixture-repo" } },
+    "user": { "login": "theo-somewear" }
+  },
+  "repository": {
+    "full_name": "somewear-labs/fixture-repo",
+    "owner": { "login": "somewear-labs" }
+  }
+}

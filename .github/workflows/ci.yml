@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  schema:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - run: npm ci
+      - run: npm run test:schema
+
+  act:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - name: Install act
+        run: |
+          curl -sL https://raw.githubusercontent.com/nektos/act/master/install.sh | sudo bash -s -- -b /usr/local/bin v0.2.88
+          act --version
+      - name: Configure act (add host.docker.internal on Linux)
+        run: |
+          mkdir -p ~/.config/act
+          echo '--container-options=--add-host=host.docker.internal:host-gateway' >> ~/.actrc
+      - run: npm ci
+      - name: Start Jira mock
+        run: |
+          npm run mock:jira &
+          for i in {1..15}; do
+            if curl -sf http://localhost:4111/rest/api/3/myself; then break; fi
+            sleep 1
+          done
+      - run: npm run test:act

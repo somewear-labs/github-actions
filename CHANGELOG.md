@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [1.0.3] - 2026-05-27
+
+### Fixed
+- Reusable workflow's `actions/checkout` step now pins to `ref: v1` (the moving major tag) instead of deriving from `github.workflow_sha`. Surfaced during the Task 14 fixture-repo smoke: under `pull_request_target` triggered from a consumer repo, `github.workflow_sha` resolves to the *caller's* commit SHA — not the called workflow's — so checkout was trying to fetch a fixture-repo SHA from `somewear-labs/github-actions` and failing with "Repository not found." Pinning to `v1` matches what consumers `uses:` anyway.
+
 ## [1.0.2] - 2026-05-27
 
 Cleanup pass surfaced by code reviews during the v1.0.0 implementation. Library and docs hardened ahead of the first real pilot consumer.

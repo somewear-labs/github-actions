@@ -1,0 +1,20 @@
+{
+  "action": "opened",
+  "number": 42,
+  "pull_request": {
+    "number": 42,
+    "draft": false,
+    "title": "Fix login race condition",
+    "body": "Root cause: token race. Fix: serialize refresh.",
+    "html_url": "https://github.com/somewear-labs/fixture-repo/pull/42",
+    "base": {
+      "ref": "main",
+      "repo": { "full_name": "somewear-labs/fixture-repo" }
+    },
+    "user": { "login": "outside-contractor-99" }
+  },
+  "repository": {
+    "full_name": "somewear-labs/fixture-repo",
+    "owner": { "login": "somewear-labs" }
+  }
+}

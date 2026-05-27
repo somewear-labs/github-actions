@@ -13,21 +13,36 @@ if ! curl -sf "http://localhost:${PORT}/rest/api/3/myself" >/dev/null; then
   exit 2
 fi
 
-# Each entry: fixture:scenario:expected_decision
+# Each entry: fixture:scenario:expected_decision:config_key:membership
+# - config_key: '' uses base-ref-loaded config; otherwise key into CONFIGS map below.
+# - membership: 'member' (default) | 'non-member' | 'real' (no mock).
 CASES=(
-  "happy-create.json:happy:proceed-create"
-  "draft-opened.json:happy:skip-draft"
-  "ignore-author.json:happy:skip-ignored-author"
-  "idempotent-skip-prefix.json:happy:skip-has-key"
-  "idempotent-skip-no-colon.json:happy:skip-has-key"
-  "idempotent-skip-mid-title.json:happy:skip-has-key"
-  "idempotent-skip-trailing.json:happy:skip-has-key"
+  "happy-create.json:happy:proceed-create:default-active::"
+  "draft-opened.json:happy:skip-draft:default-active::"
+  "ignore-author.json:happy:skip-ignored-author:default-active::"
+  "idempotent-skip-prefix.json:happy:skip-has-key:default-active::"
+  "idempotent-skip-no-colon.json:happy:skip-has-key:default-active::"
+  "idempotent-skip-mid-title.json:happy:skip-has-key:default-active::"
+  "idempotent-skip-trailing.json:happy:skip-has-key:default-active::"
+  "external-contributor.json:happy:skip-external:default-active:non-member"
+  "warn-only.json:happy:skip-warn-only:warn-only-mode:"
 )
+
+declare -A CONFIGS
+CONFIGS[default-active]="jira:
+  project: BOT
+mode: active"
+CONFIGS[warn-only-mode]="jira:
+  project: BOT
+mode: warn-only"
 
 failed=0
 for entry in "${CASES[@]}"; do
-  IFS=':' read -r fixture scenario expected <<<"$entry"
+  IFS=':' read -r fixture scenario expected config_key membership <<<"$entry"
   echo "=== ${fixture} (scenario=${scenario}, expect=${expected}) ==="
+
+  CONFIG_BODY="${CONFIGS[${config_key:-default-active}]:-${CONFIGS[default-active]}}"
+  MEMBERSHIP="${membership:-member}"
 
   LOG=$(mktemp)
   act pull_request_target \
@@ -36,6 +51,8 @@ for entry in "${CASES[@]}"; do
        -s JIRA_API_TOKEN=fake-token \
        --env "JIRA_BASE_URL=http://host.docker.internal:${PORT}" \
        --env "MOCK_SCENARIO=${scenario}" \
+       --env "MOCK_GH_CONFIG_BODY=${CONFIG_BODY}" \
+       --env "MOCK_GH_MEMBERSHIP=${MEMBERSHIP}" \
        --quiet 2>&1 | tee "$LOG"
 
   if grep -q "DECISION=${expected}" "$LOG"; then

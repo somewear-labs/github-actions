@@ -67,11 +67,13 @@ for entry in "${CASES[@]}"; do
        --env "MOCK_NO_GH_API=1" \
        --quiet 2>&1 | tee "$LOG" || true
 
-  if grep -q "DECISION=${expected}" "$LOG"; then
+  # Match either core.info format (DECISION=xxx) or core.setOutput format (::set-output:: decision=xxx).
+  # --quiet suppresses core.info, but set-output is still visible.
+  if grep -qE "DECISION=${expected}|::set-output:: decision=${expected}" "$LOG"; then
     echo "OK:   ${fixture}"
   else
     echo "FAIL: ${fixture} expected DECISION=${expected}, got:"
-    grep "DECISION=" "$LOG" || echo "  (no decision marker found)"
+    grep -E "DECISION=|::set-output:: decision=" "$LOG" || echo "  (no decision marker found)"
     failed=$((failed + 1))
   fi
   rm "$LOG"

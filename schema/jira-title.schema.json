@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/somewear-labs/github-actions/v1/schema/jira-title.schema.json",
+  "title": "PR-Title Jira-Key Action — per-repo config",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["jira"],
+  "properties": {
+    "jira": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["project"],
+      "properties": {
+        "project": {
+          "type": "string",
+          "pattern": "^[A-Z][A-Z0-9]{1,9}$",
+          "description": "Target Jira project key, e.g. SBE."
+        },
+        "issue_type": {
+          "type": "string",
+          "default": "Task",
+          "description": "Jira issue type for auto-created tickets."
+        }
+      }
+    },
+    "mode": {
+      "type": "string",
+      "enum": ["active", "warn-only"],
+      "default": "active"
+    },
+    "ignore_authors": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": ["dependabot[bot]", "renovate[bot]", "github-actions[bot]"]
+    },
+    "labels": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": []
+    },
+    "description_template": {
+      "type": "string",
+      "default": "Auto-created from PR: {{pr_url}}\nAuthor: @{{github_login}}\nRepo: {{repo_full_name}}\n\n---\n\n{{pr_body}}"
+    }
+  }
+}

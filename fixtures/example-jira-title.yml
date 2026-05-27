@@ -1,0 +1,19 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/somewear-labs/github-actions/v1/schema/jira-title.schema.json
+# Drop this in your repo at .github/jira-title.yml after customizing.
+
+jira:
+  project: SBE         # required — your target Jira project key
+  issue_type: Task     # default; override if you want
+
+mode: warn-only        # start in warn-only for rollout; flip to "active" after pod sign-off
+
+ignore_authors:
+  - dependabot[bot]
+  - renovate[bot]
+  - github-actions[bot]
+
+labels:
+  - backlog
+
+# description_template uses {{pr_url}}, {{pr_title}}, {{pr_body}}, {{pr_number}},
+# {{github_login}}, {{repo_full_name}}. Omit to use the default.

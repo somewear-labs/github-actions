@@ -1,0 +1,10 @@
+jira:
+  project: BAC
+  issue_type: Story
+mode: warn-only
+ignore_authors:
+  - dependabot[bot]
+labels:
+  - backlog
+  - triage
+description_template: "PR: {{pr_url}}\n@{{github_login}}"

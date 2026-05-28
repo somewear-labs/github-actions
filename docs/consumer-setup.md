@@ -58,7 +58,8 @@ on:
   pull_request_target:
     types: [opened, ready_for_review]
 permissions:
-  pull-requests: write
+  contents: read         # read .github/jira-title.yml + PR title for CAS race check
+  pull-requests: write   # PATCH the PR title; post comments
 concurrency:
   group: jira-title-${{ github.event.pull_request.number }}
   cancel-in-progress: false
@@ -68,6 +69,8 @@ jobs:
     secrets:
       JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
 ```
+
+Both permissions are required: `contents: read` so the action can fetch `.github/jira-title.yml` (and refetch the PR title for the race-condition guard); `pull-requests: write` so it can PATCH the title and post comments. A reusable workflow's permissions are intersected with the caller's — if the caller only declares one, the action will fail with HTTP 403 "Resource not accessible by integration".
 
 ## 4. Verify
 

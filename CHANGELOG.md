@@ -2,6 +2,18 @@
 
 ## [Unreleased]
 
+## [1.0.4] - 2026-05-27
+
+### Changed
+- **External-contributor guard now reads `pull_request.author_association` from the webhook payload** instead of calling `github.rest.orgs.checkMembershipForUser`. The orgs API requires `members: read` permission that `GITHUB_TOKEN` under Actions can't grant; the payload field carries the same authoritative data with no extra perms. Treats `OWNER`, `MEMBER`, `COLLABORATOR` as internal; everything else as external.
+
+### Docs
+- **Consumer-setup now requires both `contents: read` AND `pull-requests: write`** in the caller workflow's permissions block. The action reads `.github/jira-title.yml` and the PR title via the GitHub API; `contents: read` is required. A reusable workflow's permissions are intersected with the caller's, so the caller must declare both — declaring only `pull-requests: write` causes HTTP 403 "Resource not accessible by integration."
+- Reusable workflow's own permissions block now declares both with an explanatory comment.
+
+### Surfaced by
+Task 14 fixture-repo smoke (third attempt) — the original plan's caller-workflow YAML and the spec didn't anticipate the `contents: read` requirement.
+
 ## [1.0.3] - 2026-05-27
 
 ### Fixed

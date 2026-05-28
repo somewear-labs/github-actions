@@ -9,7 +9,14 @@ on:
 jobs:
   pr-title-jira:
     runs-on: ubuntu-latest
+    # Required permissions:
+    #   contents: read         — read .github/jira-title.yml from the PR's base ref
+    #                            and refetch PR title for the compare-and-swap race check
+    #   pull-requests: write   — PATCH the PR title; post comments
+    # Consumers MUST set both at the caller's workflow- or job-level; a
+    # reusable workflow's permissions are intersected with the caller's.
     permissions:
+      contents: read
       pull-requests: write
     steps:
       - name: Checkout reusable-workflow repo at v1

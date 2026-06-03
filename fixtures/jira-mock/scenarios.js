@@ -24,5 +24,16 @@ module.exports = {
     kind: 'error',
     status: 503,
     body: { errorMessages: ['Service unavailable'] }
+  },
+  '429-then-success': {
+    // Hit 429 once, with a Retry-After: 1 header, then succeed. Validates
+    // that the action (a) retries on 429 (not just 5xx) and (b) honors
+    // Retry-After when set.
+    kind: 'flake',
+    status: 429,
+    body: { errorMessages: ['Too Many Requests'] },
+    failTimes: 1,
+    successBody: { id: '10003', key: 'BOT-1502', self: 'http://localhost:4111/rest/api/3/issue/10003' },
+    headers: { 'Retry-After': '1' }
   }
 };

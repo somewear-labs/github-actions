@@ -12,8 +12,6 @@ Severity convention:
 
 ### Important
 
-- **`lib/jira.js` — `Retry-After` header ignored on 429.** Spec says "5xx or 429 → retry" and the code does retry, but uses a fixed `[1000, 2000, 4000]` schedule even when Jira sets `Retry-After`. Add support with a sane upper-clamp (e.g. min(retry_after, 30s)). Pure hardening — Atlassian Cloud rarely rate-limits a single-issue create, so fixed backoff has been adequate in the pilot. Source: Task 8 code-review I2.
-
 - **`lib/main.js` + `lib/comments.js` — mock seams cannot be locked out of production.** Five env-var seams exist: `MOCK_SCENARIO`, `MOCK_GH_MEMBERSHIP`, `MOCK_GH_CONFIG_BODY`, `MOCK_TITLE_RACE_INJECT`, `MOCK_NO_GH_API`. Workflow YAML only exposes `MOCK_SCENARIO`; the others rely on the `env:` block not forwarding them (accidental defense-in-depth). Wire all five behind a single `MOCK_MODE=1` umbrella and document that `MOCK_MODE` must never be set in prod. Source: Task 7 code-review I1 + Task 12 deviation.
 
 ---
@@ -34,11 +32,7 @@ Severity convention:
 
 ## Documentation (`docs/`)
 
-### Minor
-
-- **`docs/architecture.md` references `somewear-labs/github-actions-fixture`.** Repo doesn't exist yet (Task 14 scaffolds it). Once Task 14 lands, the forward reference resolves.
-
-- **`docs/architecture.md` — "~300 LOC" is stale.** `wc -l lib/*.js` is now ~440 with v1.0.2. Either bump or drop.
+_All minor doc items addressed in v1.0.6._
 
 ---
 
@@ -52,6 +46,11 @@ User-action items, no code:
 - Enable secret-scanning + push protection on the repo.
 
 ---
+
+## Done in v1.0.6
+
+- `lib/jira.js` honors `Retry-After` response header on 429 / 5xx (clamped to 30s, falls back to fixed schedule when absent). 429 also moved from non-retryable 4xx to the retryable group, matching the original spec.
+- `docs/architecture.md` refreshed: dropped stale pulse-bot identity, corrected LOC estimate, made fixture-repo bullet present-tense + linked.
 
 ## Done in v1.0.2
 

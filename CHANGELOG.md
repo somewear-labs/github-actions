@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Pilot
+- Active mode rolled out to `somewear-labs/ataklibs` on 2026-06-03 (warn-only + flip in one pass). First production consumer.
+
 ## [1.0.5] - 2026-06-03
 
 ### Fixed

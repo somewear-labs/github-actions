@@ -32,8 +32,8 @@ _Updated 2026-05-26. Verify against git log on `main` before trusting._
 | 12. Self-CI + tag v1.0.0 | ✅ Complete | `2ba1601` + 6 fix-ups → `af7c341`; tags `v1.0.0` and `v1` at `a7cff7c` |
 | 13. Set up org secret + email var (user-driven; pulse-bot deferred) | ✅ Complete | workflow change shipped as v1.0.1 via PR #1 (`84a1998` + `5501b39`); user set `JIRA_API_TOKEN` org secret + `JIRA_USER_EMAIL` org var |
 | 14. Fixture repo + end-to-end smoke | ✅ Complete | `somewear-labs/github-actions-fixture` PR #1 created `SBE-307`, title prepended, success comment posted (run 26908339272). Shook out 5 deferred bugs → v1.0.2/3/4/5 (see below). |
-| 15. Pilot wire-up PR in `ataklibs` (warn-only, user-driven) | ⏳ Next | — |
-| 16. Pilot active-mode flip (user-driven) | Pending | — |
+| 15. Pilot wire-up PR in `ataklibs` (warn-only, user-driven) | ✅ Complete | User-driven (2026-06-03). Warn-only wire-up + observation done in one pass with the active flip. |
+| 16. Pilot active-mode flip (user-driven) | ✅ Complete | User-driven (2026-06-03). Real Jira tickets now being auto-created for ataklibs PRs without a key in the title. |
 
 **Decisions / deviations worth re-surfacing for the next session:**
 - Repo owner: `@theo-gordon` (verified; codified in `.github/CODEOWNERS`).

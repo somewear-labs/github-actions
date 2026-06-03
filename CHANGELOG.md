@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+## [1.0.6] - 2026-06-03
+
+### Changed
+- **Honor `Retry-After` response header on 429 / 5xx.** Previously the action used a fixed `[1s, 2s, 4s]` backoff schedule regardless of what Jira asked for, and treated 429 as a non-retryable 4xx. Now 429 is retried alongside 5xx, and the server-supplied `Retry-After: <seconds>` value is used as the delay when present (clamped to 30s, falling back to the fixed schedule otherwise). Atlassian rarely 429s on single-issue creates so this is hardening, not bug-fix.
+
+### Docs
+- `docs/architecture.md` — refreshed for current reality: dropped stale `pulse-bot` identity reference, corrected LOC estimate (~300 → ~500), made the fixture-repo bullet present-tense + linked.
+
 ### Pilot
 - Active mode rolled out to `somewear-labs/ataklibs` on 2026-06-03 (warn-only + flip in one pass). First production consumer.
 

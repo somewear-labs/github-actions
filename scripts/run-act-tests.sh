@@ -29,6 +29,7 @@ CASES=(
   "warn-only.json:happy:skip-warn-only:warn-only-mode::"
   "jira-4xx.json:4xx-auth:fail-jira-4xx:default-active::"
   "jira-5xx-then-success.json:5xx-then-success:patched-title:default-active::"
+  "jira-429-retry-after.json:429-then-success:patched-title:default-active::"
   "race-loss.json:happy:skip-race-lost:default-active::SBE-9999 race-added title"
   "long-title.json:happy:patched-title-truncated:default-active::"
 )

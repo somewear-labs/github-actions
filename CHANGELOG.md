@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+## [1.0.5] - 2026-06-03
+
+### Fixed
+- **Convert ticket description to Atlassian Document Format (ADF).** Jira Cloud REST API v3 rejects raw-string descriptions with HTTP 400 (`The field value is not valid Atlassian Document Format (ADF) content.`); only v2 accepted strings. The action used v3 throughout but sent plain text. New `textToAdf(text)` helper in `lib/jira.js` wraps the rendered description in a minimal ADF doc: double-newlines split into paragraph blocks, single newlines become hardBreak inline nodes. Markdown formatting in PR bodies still appears as plain text in Jira (acceptable for v1; richer mapping deferred).
+
+### Surfaced by
+Task 14 fixture-repo smoke against real SBE Jira (run 26908102302).
+
 ## [1.0.4] - 2026-05-27
 
 ### Changed

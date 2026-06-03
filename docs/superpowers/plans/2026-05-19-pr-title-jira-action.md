@@ -31,8 +31,8 @@ _Updated 2026-05-26. Verify against git log on `main` before trusting._
 | 11. Documentation | ✅ Complete | `d6a0793` |
 | 12. Self-CI + tag v1.0.0 | ✅ Complete | `2ba1601` + 6 fix-ups → `af7c341`; tags `v1.0.0` and `v1` at `a7cff7c` |
 | 13. Set up org secret + email var (user-driven; pulse-bot deferred) | ✅ Complete | workflow change shipped as v1.0.1 via PR #1 (`84a1998` + `5501b39`); user set `JIRA_API_TOKEN` org secret + `JIRA_USER_EMAIL` org var |
-| 14. Fixture repo + end-to-end smoke | ⏳ Next | — |
-| 15. Pilot wire-up PR in `ataklibs` (warn-only, user-driven) | Pending | — |
+| 14. Fixture repo + end-to-end smoke | ✅ Complete | `somewear-labs/github-actions-fixture` PR #1 created `SBE-307`, title prepended, success comment posted (run 26908339272). Shook out 5 deferred bugs → v1.0.2/3/4/5 (see below). |
+| 15. Pilot wire-up PR in `ataklibs` (warn-only, user-driven) | ⏳ Next | — |
 | 16. Pilot active-mode flip (user-driven) | Pending | — |
 
 **Decisions / deviations worth re-surfacing for the next session:**
@@ -42,6 +42,13 @@ _Updated 2026-05-26. Verify against git log on `main` before trusting._
 - Code reviews across Tasks 3-12 logged ~25 cleanup items (style, error-handling, doc-accuracy, test-coverage gaps). Tracked in the session task list — should be processed as a single cleanup batch before Task 15 (pilot).
 - Code-review polish items deferred from Task 1 (still pending, user-action): branch protection on `main`, `LICENSE`, `SECURITY.md`, secret-scanning.
 - **Task 13 simplified 2026-05-27**: skipping the dedicated `pulse-bot` service account for now (overkill at current scale, no mailbox provisioned, audit-trail benefit minor). Reusing Theo's Atlassian account: token generated under his profile, `JIRA_API_TOKEN` org secret + `JIRA_USER_EMAIL` org variable (= his email) point at it. Workflow updated to forward `vars.JIRA_USER_EMAIL` so the email side is configurable. Migrating to a real bot account later is a token+var swap with no code changes. Steps 1-3 of Task 13 (Atlassian user creation, project permissions, sandbox `BOT` project owned by pulse-bot) are deferred to a follow-up if/when the bot account becomes worthwhile — the `BOT` sandbox project is still wanted; Theo can create it under his own ownership.
+- **Token owner correction 2026-06-03**: during Task 14 smoke, discovered the existing token actually belonged to `travis@somewearlabs.com` (not Theo). `JIRA_USER_EMAIL` org var corrected to `travis@somewearlabs.com`; Travis granted SBE Create-Issue perm. Action runs under Travis's Jira identity now. Same migration story for the future: regenerate token under a new user + flip the org var, no code changes.
+- **Task 14 surfaced 4 bugs not covered by act tests** — all fixed in successive patch releases:
+  - `v1.0.3` (`49e1d24`): `actions/checkout` ref pinned to `v1` (was using `github.workflow_sha` which resolves to *caller's* SHA under `pull_request_target`).
+  - `v1.0.4` (`6b76cf7`): caller workflows now require `contents: read` (was only `pull-requests: write`, causing 403 on `repos.getContent`). External-contributor guard refactored from `orgs.checkMembershipForUser` (needed `members:read`) to `pr.author_association` (in payload, no perms required).
+  - `v1.0.5` (`816f425`): description now sent as Atlassian Document Format. Jira Cloud REST v3 rejects plain-string descriptions with HTTP 400. Was flagged as a TODO in the original Task 8 plan and never addressed.
+  - Plus: `somewear-labs/github-actions` had to be made **public** for `actions/checkout` to clone it from consumer repos (private workflow_call works, but the lib/ source code checkout needed real read access).
+- **Cleanup batch shipped as v1.0.2 (`7141e53` + `53ee7ee`)** before Task 14: 3 Important + 7 Minor lib items, 4 Important doc items. See `docs/open-cleanup.md` for what's still deferred (Retry-After 429, MOCK_MODE umbrella, repo-level polish).
 
 ---
 
